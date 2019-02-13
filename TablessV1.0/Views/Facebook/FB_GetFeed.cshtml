@@ -1,0 +1,103 @@
+﻿@model IEnumerable<TablessV1._0.Models.FacebookPostViewModel>
+    <style>
+        .body-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .body-content::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(136,136,136,0.8);
+            border-radius: 10px;
+        }
+        .body-content::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(68,68,68,0.7);
+        }
+        .container{
+            border-radius:10px;
+        }
+        .post-content {
+            margin-top: 10px;
+            border-radius: 10px;
+            background: #333;
+            padding: 15px 5px;
+            border: 1px solid #888;
+        }
+       
+        
+    </style>
+<div class="container">
+   
+    <div class="row">
+        <div class="col-md-12" style="height:300px;">
+            <div class="table-responsive" >
+                <div class="body-content pre-scrollable" style="height:319px; overflow-x: hidden;">
+                   
+                       
+                            @foreach (var item in Model)
+                            {
+                                    <div class="post-content">
+ 
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <a href="https://www.facebook.com/@item.From_Id" target="_blank" title="@item.From_Name">
+
+                                                            <img class="img-circle special-img" src="~/photos/profile.jpg" width="50" height="50" style="margin-top: 5px;" />
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        @if (!string.IsNullOrEmpty(item.Story))
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <span style="color:#aaa;">@item.Story</span>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        <br />
+                                                        <hr />
+                                                        @if (!string.IsNullOrEmpty(item.Picture_Url))
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <a href="@item.Picture_Url" target="_blank"><img style="width:200px;height:200px" src="@item.Picture_Url" /></a>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(item.Description))
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <span>@item.Description</span>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(item.Message))
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <span style=" display: block;margin-bottom: 20px;color: #fff; font-size: 18px;">@item.Message</span>
+                                            </div>
+                                            </div>
+                                                        }
+                                                        <div class="row" s>
+                                                            <div class="col-md-12" style="    margin-left: 15px;color: #ccc;">
+                                                                <span class="text-muted">Posted At : @item.Created_Time</span>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           
+                                            
+                                        
+                                        
+                                    </div>
+   
+                            }
+                       
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

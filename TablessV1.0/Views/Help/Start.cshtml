@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.Title = "Start";
+    Layout = "";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TabLess</title>
+    <link href="~/Content/fontawesome/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/normalize.css" rel="stylesheet" />
+    <link href="~/Content/style3.css" rel="stylesheet" />
+</head>
+<body>
+    <!--start up div-->
+    <div class="up">up</div>
+    <!--end up div-->
+    <!--start header-->
+    <div class="header">
+        <div class="overlay">
+            <div class="container">
+                <div class="navbar">
+                    <div>
+                        <span>Tab<span class="main-color">Less</span></span>
+                    </div>
+                    <ul>
+                        <li class="active">@Html.ActionLink("Home", "Start", "Help")</li>
+                        <li >@Html.ActionLink("Contact", "Contact", "Help")</li>
+                        <li>@Html.ActionLink("Help", "Help", "Help")</li>
+                        <li><button>@Html.ActionLink("Login", "Login", "Account")</button></li>
+                        <li><button>@Html.ActionLink("Register", "Register", "Account")</button></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="header-content ">
+                    <h2 class="upper">Manage all your social media marketing <span class="main-color"> in one place</span></h2>
+                    <p>
+                        From finding prospects to serving customers,<br>
+                        TabLess helps you do more with your social media marketing.
+                    </p>
+                    <button class="upper"><a href="announce.html">get started</a></button>
+                    <button class="upper">our works</button>
+                </div>
+            </div>
+            <span class="arrow"><i class="fa fa-chevron-down"></i></span>
+        </div>
+    </div>
+    <!--end header-->
+    <!--start features-->
+    <div class="feat">
+        <div class="container">
+            <div class="content">
+                <div>
+                    <div class="icon"><i class="fa fa-facebook-square fa-3x"></i></div>
+                    <h4>facebook</h4>
+                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</p>
+                </div>
+                <div>
+                    <div class="icon"><i class="fa fa-google-plus fa-3x"></i></div>
+                    <h4>google plus</h4>
+                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</p>
+                </div>
+                <div>
+                    <div class="icon"><i class="fa fa-youtube fa-3x"></i></div>
+                    <h4>youtube</h4>
+                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</p>
+                </div>
+                <div>
+                    <div class="icon"><i class="fa fa-twitter fa-3x"></i></div>
+                    <h4>twitter</h4>
+                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--end features-->
+    <!--start subscribe-->
+    <div class="sub">
+        <div class="overlay">
+            <div class="container">
+                <form>
+                    <input type="email" name="email" placeholder="    Type Your Mail">
+                    <button class="upper">subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--end subscribe-->
+    <!--start footer-->
+    <div class="footer">
+        <div class="container">
+            <span class="upper first">&copy; 2015 copy right design studio</span>
+            <span class=" first"><a href="team.html">ourteam</a> | <a href="#">ourwork</a> | <a href="contact.html">contact</a></span>
+            <span class="upper first">designed by elsheikh.net</span>
+        </div>
+    </div>
+    <!--end footer-->
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script src="~/Scripts/jquery.nicescroll.min.js"></script>
+    <script src="~/Scripts/plugins2.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    @using Microsoft.AspNet.Identity;
+    @using Microsoft.AspNet.Identity.EntityFramework;
+    @using TablessV1._0.Models;
+    @using TablessV1._0.Controllers;
+    @{
+        var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+       // var currentUser = manager.FindById(User.Identity.GetUserId());
+    }
+
+
+    <script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-6538434208171303",
+    enable_page_level_ads: true
+  });
+    </script>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Tangerine">
+    <link href="https://fonts.googleapis.com/css?family=Bubbler+One|Dancing+Script|Kaushan+Script" rel="stylesheet">
+  
+    <link href="~/Content/fontawesome/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <style>
+        .font {
+            font-family: 'Tangerine', serif;
+            font-size: 48px;
+        }
+        .font2 {
+            font-family: 'Kaushan Script', cursive;
+            font-size: 100px;
+        }
+        .container-fluid {
+            background-size: 100% 100%;
+            background-attachment: fixed;
+        }
+        body {
+            background-image: url('../../photos/HDPackSuperiorWallpapers576_239.jpg');
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            background-size: cover;
+        }
+        /*start google design*/
+        .posts {
+            color: #fff;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            max-height:400px
+        }
+
+
+            .posts::-webkit-scrollbar {
+                width: 12px;
+            }
+
+            .posts::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(136,136,136,0.8);
+                border-radius: 10px;
+            }
+
+            .posts::-webkit-scrollbar-thumb {
+                border-radius: 10px;
+                -webkit-box-shadow: inset 0 0 6px rgba(68,68,68,0.7);
+            }
+            .posts .post {
+                border-radius: 10px;
+                margin-top: 10px;
+                border: 1px solid #DDD;
+            }
+            .posts .post .userImg img{
+                    border-radius:50%;
+                }
+          .posts .post .first {
+                   margin-top:10px
+            }
+            .posts .post .first .userName, .posts .post .first .accessPost {
+                margin-top: 5px
+            }
+
+            .posts .post .first .date{
+                margin-bottom: 10px
+            }
+
+              
+           /*end google design*/
+                .bg {
+                    /* The image used */
+                    background-image: url('../../photos/HDPackSuperiorWallpapers576_239.jpg');
+                    /* Full height */
+                    height: 100%;
+                    /* Center and scale the image nicely */
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 100%;
+                }
+        .special-img {
+            position: relative;
+            top: -5px;
+            float: left;
+            left: -5px;
+        }
+        .glyphicon.glyphicon-cog {
+            font-size: 15px;
+            color:aliceblue;
+            margin-left:10px
+                
+        }
+        .well {
+            background-color: #1d1c1c;
+        }
+        
+    </style>
+</head>
+<body>
+@if (User.Identity.IsAuthenticated) { 
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("TABLESS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
+                    <li>@Html.ActionLink("Home", "Index", "Facebook")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Help")</li>
+                    <li>@Html.ActionLink("Help", "Help", "Help")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+}
+    <div class="container body-content">
+        @RenderBody()
+        <br />    
+        
+    </div>
+    <span style="color:black;margin-left:100px;color:#fff">&copy; @DateTime.Now.Year - Tabless Application</span>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

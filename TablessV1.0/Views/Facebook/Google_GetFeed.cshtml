@@ -1,0 +1,526 @@
+﻿
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using TablessV1._0.Models;
+@using TablessV1._0.Controllers;
+@{
+    var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+    var currentUser = manager.FindById(User.Identity.GetUserId());
+    <h1 id="GID" style="display:none">@currentUser.GoogleUserId</h1>
+
+}
+@*<br />
+<a href="https://plus.google.com/share?url=YOUR_URL" 
+    onclick="window.open(this.href, 'Google+', 'width=490,height=530'); return false;">
+    <img src="IMAGE_PATH" alt="Google+" title="Google+" />
+</a>
+    *@
+
+<!--input type="button" value="LogoutgetPosts" onclick="getPosts()"  />-->
+@*<head>
+    <link href="~/Content/GooglePosts.css" rel="stylesheet" />
+    
+</head>*@
+
+
+<div id="profile" ></div>
+<div id="datafromapi"></div>
+<div id="design"></div>
+
+<script>
+    window.onload = function () {
+        getPosts();
+    };
+    var GuserID = "";
+    function ParseJsonData(data) {
+        var itemsArr = data.items;
+        console.log(data.toString());
+        var alldesign = "";
+
+        document.getElementById("design").innerHTML = "";
+        alldesign += "<div class=\"posts\">";
+        for (var x = 0; x < itemsArr.length; x++) {
+            var strToPrint = "";
+
+            var obj = itemsArr[x];
+            var postKind = obj.kind;
+            var postData = obj.title;
+            var postPublishedDate = new Date(obj.published);
+            var postUpdateDate = new Date(obj.updated);
+            var postUrl = obj.url;
+            var verbObj = obj.verb; //share /post
+            //alert(postData);
+            //////////////////////////////////////////////////////
+            var actorObj = obj.actor;
+            var userName = actorObj.displayName;
+            var accountUrl = actorObj.url;
+            var userImageUrl = actorObj.image.url;
+
+            var accessDesc = obj.access.description;//  access of this post public
+
+
+            
+
+            alldesign += "<div class=\"post\">" +
+                "<div class=\"row first\">" +
+                "<div class=\"userImg col-md-2\"><a href=\"" + accountUrl + "\"> <img src = \"" + userImageUrl + "\">" +
+                "</a></div>" +
+                 "<div class=\"userName col-md-4\"> user name : " + userName + "</div>" +
+                "<div class=\"accessPost col-md-4\"> acceess : " + accessDesc + "</div>" +
+            
+                 "</div >"+
+
+                "<div class=\"row\">" +
+
+                "<div class=\"col-md-2\">"+
+                "</div>" +
+
+                "<div class=\"date col-md-14\"> published date : " +
+                postPublishedDate +
+                "</div>" +
+
+                "</div >"
+
+
+
+
+                
+                //"<div> post data :   " +
+                //postData +
+                //"</div>";
+
+
+
+            ////////////////////////////////////////////
+            var objectObj = obj.object;
+
+            //attachmnets
+            var attachmentArr = objectObj.attachments;
+            if (attachmentArr != undefined) {
+                var attachmentType = attachmentArr[0].objectType; //"album"
+                var attachmentContent = attachmentArr[0].displayName; //7/2/17
+                var allAttachmentUrl = attachmentArr[0].url; //https://plus.google.com/photos/116121647441891070688/albums/6437956443635811729?authkey=CJTfgqDxutjl6QE
+
+                alldesign += "<div class=\"row\">" +
+                    "<div class=\"col-md-12\" style=\"margin-top:10px;\">" +
+                    "<a href=\"" + allAttachmentUrl + "\"" + " target=\"_blank\">" + attachmentContent + "</a>" + 
+                    "</div>" +
+                    "</div>";
+
+                    
+
+
+
+
+
+                
+
+                //thumbnails
+                var thumbnailsArr = attachmentArr[0].thumbnails;
+                console.log("\n\n thumbnailsArr object : " + thumbnailsArr + " \n\n");
+                if (thumbnailsArr != undefined) {
+                    var thumbnailsArrCount = thumbnailsArr.length;
+                    //all images Url
+                    for (var x = 0; x < thumbnailsArrCount; x++) {
+                        var url = thumbnailsArr[x].image.url;
+                        var imageType = thumbnailsArr[x].image.type;
+                        var height = thumbnailsArr[x].image.height;
+                        var width = thumbnailsArr[x].image.width;
+
+
+                        alldesign += "<div class=\"row\">" +
+                            "<div class=\"col-md-\">" +
+                            "<img src=\"" + url + "\" width=\"350px\" height=\"400px\"> " +
+                            "</div>" +
+                            "</div>";
+
+
+                        
+                        
+                    }
+                }
+
+                else {
+                    var contenAttType = "";
+                    alldesign += "<br><br>";
+                    switch (attachmentType) {
+                        case "photo":
+                            contenAttType = "photo";
+                            strToPrint += "\n\n photo \n\n";
+                            var pimgUrl = attachmentArr[0].fullImage.url; //"album"
+                            var pimgWidth = attachmentArr[0].fullImage.width;
+                            var pimgHeight = attachmentArr[0].fullImage.height;
+                            var content = attachmentArr[0].content; //"album"
+                            alldesign +="<img src=\"" + pimgUrl + "\" width=\"350px\" height=\"400px\"/>";
+                            
+                            break;
+                        case "video":
+                            contenAttType = "video";
+                            var vimgUrl = attachmentArr[0].image.url; //"album"
+                            var vimgWidth = attachmentArr[0].image.width;
+                            var vimgHeight = attachmentArr[0].image.height;
+                            var videoHeader = attachmentArr[0].displayName; //"album"
+                            var contentUnderVideo = attachmentArr[0].content; //"album"
+                            alldesign +=" <img src = \"" + vimgUrl + "\">" +
+                                       "<div> " + contentUnderVideo + "</div>";
+                            
+                            break;
+                        case "event":
+                            strToPrint += "\n\n event \n\n";
+                            contenAttType = "event";
+                            var eDisplayName = attachmentArr[0].displayName;
+                            var eUrl = attachmentArr[0].url;
+                            var eContent = attachmentArr[0].content;
+                            alldesign += "<div>" + eDisplayName + "</div>"
+                                + "<div> " + eContent + "</div> <div><a href=\"" + eUrl + "\">go to event</a></div>";
+
+                            break;
+                        case "article":
+                            contenAttType = "article";
+                            var cimgUrl = attachmentArr[0].image.url;
+                            var cimgwidth = attachmentArr[0].image.width;
+                            var cimgheight = attachmentArr[0].image.height;
+                            alldesign += "<div><img src=\"" + cimgUrl + "\" width=\"350px\" height=\"400px\" ></a></div>";
+
+                            break;
+                      
+
+
+                    }
+
+
+                }
+               
+
+            }
+            alldesign += "</div>";
+
+
+            /*
+             var design = "  <div class=\"gcontainer\"> " +
+                 "<div class=\"header\">" +
+                 "<div> <a href=\""+accountUrl +"\">" +
+                 "<img src=\"" +
+                 userImage +
+                 "\">" +
+                 "</a><h2>" +
+                 userName +
+                 "</h2>" +
+                 "<h3>" +
+                 accessDesc +
+                 "</h3>" +
+                 "<a class=\"time\" href=\"#\">" +
+                 publishedDate +
+                 "</a></div></div>" +
+                 "<div class=\"content\">" +
+                 "<p>" +postData+ "<br>" + contentTitle +
+                 "</p>";
+                 
+             console.log("actor id  " + userID + "     ,");
+             console.log("displayName : " + userName + "     ,");
+             console.log("accout url : " + accountUrl + "     ,");
+             console.log("image url : " + userImage + "\n\n");
+             //----------------------------------------------------------
+     
+             //public
+             
+             //----------------------------------------------------------
+             console.log("  object that hold the post data \n");
+             
+             console.log("post type  " + postType + "     ,");
+             console.log("post displayName  " + contentTitle + "     ,");
+             
+             
+             if (attachmentArr[0].image != undefined) {
+                 var imageFromAtt = attachmentArr[0].image;
+                 var imageUrl = imageFromAtt.url
+                 design += "</div><div class=\"image\">"+
+                     "<a href=\"#\">"+
+                     "<img src=\"\">"+
+                 "<img src=\""+imageUrl+"\"></a></div></div>";
+                 console.log(imageUrl  + "  , height : " + imageFromAtt.height + "   , width : " + imageFromAtt.width +
+                     "  ,  type : " + imageFromAtt.type);
+             }
+             else {
+                 console.log("array not exist ");
+             }
+             if (attachmentArr[0].fullImage != undefined) {
+                 console.log("full image :   " + attachmentArr[0].fullImage.url);
+             }
+             document.getElementById("design").innerHTML += design;
+             console.log("\n\n\n\n");
+          */
+            //alldesign += "<br> <br>";
+
+        }
+        console.log(strToPrint);
+        alldesign += "</div>"
+        document.getElementById("design").innerHTML += alldesign;
+
+
+    }
+            //function ParseJsonData(data) {
+            //    var itemsArr = data.items;
+            //    console.log(data.toString());
+            //    for (var x = 0; x < itemsArr.length; x++) {
+            //        var obj = itemsArr[x];
+            //        console.log(obj.url + '\n');
+
+            //        var publishedDate = new Date(obj.published);
+            //        var updateDate = new Date(obj.updated);
+
+            //        console.log("publlished at " + publishedDate + "       ");
+
+            //        console.log(" last updated at " + updateDate + "\n");
+            //        //-----------------------------------------------------------
+            //        console.log(" \n ------------------------------------\n"
+            //            + "user who shred the data info  : \n");
+            //        var actorObj = obj.actor;
+            //        var userID = actorObj.id;
+
+            //        var userName = actorObj.displayName;
+            //        var accountUrl = actorObj.url;
+            //        var userImage = actorObj.image.url;
+
+            //        var accessDesc = obj.access.description;
+
+            //        var objectObj = obj.object;
+            //        var attachmentArr = objectObj.attachments;
+            //        var postType = attachmentArr[0].objectType;
+            //        var contentTitle = attachmentArr[0].displayName;
+            //        var contentUrl = attachmentArr[0].url;
+
+
+
+            //        var design = "  <div class=\"gcontainer\"> " +
+            //            "<div class=\"header\">" +
+            //            "<div> <a href=\"" +
+            //            accountUrl +
+            //            "\">" +
+            //            "<img src=\"" +
+            //            userImage +
+            //            "\">" +
+            //            "</a><h2>" +
+            //            userName +
+            //            "</h2>" +
+            //            "<h3>" +
+            //            accessDesc +
+            //            "</h3>" +
+            //            "<a class=\"time\" href=\"#\">" +
+            //            publishedDate +
+            //            "</a></div></div>" +
+            //            "<div class=\"content\">" +
+            //            "<p>" +
+            //            contentTitle +
+            //            "</p>";
+
+            //        console.log("actor id  " + userID + "     ,");
+            //        console.log("displayName : " + userName + "     ,");
+            //        console.log("accout url : " + accountUrl + "     ,");
+            //        console.log("image url : " + userImage + "\n\n");
+            //        //----------------------------------------------------------
+
+            //        //public
+
+            //        //----------------------------------------------------------
+            //        console.log("  object that hold the post data \n");
+
+            //        console.log("post type  " + postType + "     ,");
+            //        console.log("post displayName  " + contentTitle + "     ,");
+
+
+            //        if (attachmentArr[0].image != undefined) {
+            //            var imageFromAtt = attachmentArr[0].image;
+            //            var imageUrl = imageFromAtt.url
+            //            design += "</div><div class=\"image\">" +
+            //                "<a href=\"#\">" +
+            //                "<img src=\"\">" +
+            //                "<img src=\"" + imageUrl + "\"></a></div></div>";
+            //            console.log(imageUrl + "  , height : " + imageFromAtt.height + "   , width : " + imageFromAtt.width +
+            //                "  ,  type : " + imageFromAtt.type);
+            //        }
+            //        else {
+            //            console.log("array not exist ");
+            //        }
+            //        if (attachmentArr[0].fullImage != undefined) {
+            //            console.log("full image :   " + attachmentArr[0].fullImage.url);
+            //        }
+            //        document.getElementById("design").innerHTML += design;
+            //        console.log("\n\n\n\n");
+
+            //    }
+
+            //    //
+            //    //  $.each( data, function( key, val ) {
+            //    //    items.push( "<li id='" + key + "'>" + val + "</li>" );
+            //    //  });
+            //    //
+            //    //  $( "<ul/>", {
+            //    //    "class": "my-new-list",
+            //    //    html: items.join( "" )
+            //    //  }).appendTo( "body" );
+            //}
+
+            function getPosts() {
+                     var id = document.getElementById("GID").innerHTML.toString();
+                    // ParseJsonData(resp);
+                    $.get("https://www.googleapis.com/plus/v1/people/" + id + "/activities/public?key=AIzaSyD_oNG0Jw7zI0q8TJNRd0WphZbabUTXOPc"
+                        , function (data, status) {
+                            ParseJsonData(data);
+                        });
+            }
+
+            function logout() {
+                gapi.auth.signOut();
+                location.reload();
+            }
+
+            function login() {
+                @{
+                    Boolean isloged=false;
+                    if (currentUser.GoogleUserId==null)
+                    {
+                        isloged = false;
+                    }
+                    else
+                    {
+                        isloged = true;
+                    }
+
+                }
+                if (@isloged) {
+
+                }
+                else {
+                    var myParams = {
+                        'clientid': '417470137876-3bss1abem5h0ghr9oois2g691uqto00o.apps.googleusercontent.com',
+                        'cookiepolicy': 'single_host_origin',
+                        'callback': 'loginCallback',
+                        'approvalprompt': 'force',
+                        'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read ' +
+                        'https://www.googleapis.com/auth/plus.me'
+                    };
+
+                    gapi.auth.signIn(myParams);
+                }
+
+
+            }
+
+            function loginCallback(result) {
+                if (result['status']['signed_in']) {
+                    var request = gapi.client.plus.people.get(
+                        {
+                            'userId': 'me'
+                        });
+                    request.execute(function (resp) {
+                        var email = '';
+                        if (resp['emails']) {
+                            for (i = 0; i < resp['emails'].length; i++) {
+                                if (resp['emails'][i]['type'] == 'account') {
+                                    email = resp['emails'][i]['value'];
+                                }
+                            }
+                        }
+
+                        var str = "Name:" + resp['displayName'] + "<br>";
+                        str += "Image:" + resp['image']['url'] + "<br>";
+                        str += "<img src='" + resp['image']['url'] + "' /><br>";
+                        str += "id: " + resp['id'] + "<br>";
+                        str += "URL:" + resp['url'] + "<br>";
+                        str += "Email:" + email + "<br>";
+
+                        /*db*/
+                        GuserID = resp['id'];
+
+                        @*var url = '@Url.Action("Index", "Dbupdate")?GuserID=' + $(this).data("GuserID");*@
+                        @*var url = '@Url.Action("Index", "Dbupdate")';*@
+                        @*location.href = '@Url.Action("Index", "Dbupdate")' ;*@
+
+                        @*@*window.location.href = '@Url.Action("Index", "Dbupdate")?uname=' + GuserID';*@
+                        //$jQuery.ajax({
+                        //    type: "POST",
+                        //    url: "Index", // the method we are calling
+                        //    contentType: "application/json; charset=utf-8",
+                        //    data: { Uid: GuserID },
+                        //    dataType: "json",
+                        //    success: function (result) {
+                        //        alert('Yay! It worked!');
+
+                        //    },
+                        //    error: function (result) {
+                        //        alert('Oh no :(');
+                        //    }
+                        //});
+                        jQuery.ajax({
+                            type: "POST",
+                            url: "@Url.Action("Index", "Dbupdate")",
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify({ Uid: GuserID }),
+                            success: function (data) {
+                               // alert(data);
+                            },
+                            failure: function (errMsg) {
+                                alert(errMsg);
+                            }
+                        });
+                    });
+
+                    //    document.getElementById("profile").innerHTML = str;
+                         @*jQuery.ajax({
+            type: "POST",
+            url: "@Url.Action("Index")",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ Uid: GuserID }),
+            success: function (data) {
+                alert(data);
+            },
+            failure: function (errMsg) {
+                alert(errMsg);
+            }
+                    });*@
+
+
+                }
+
+            }
+
+            function editDescription(docId, fileName, description) {
+                document.editDescriptionForm.docId = Uid;
+
+
+                document.editDescriptionForm.submit();
+            }
+            function onLoadCallback() {
+                gapi.client.setApiKey('AIzaSyD_oNG0Jw7zI0q8TJNRd0WphZbabUTXOPc');
+                gapi.client.load('plus', 'v1', function () { });
+            }
+
+
+
+</script>
+<script type="text/javascript">
+            (function () {
+                var po = document.createElement('script'); po.type = 'text/javascript';
+                po.async = true;
+                po.src = 'https://apis.google.com/js/client.js?onload=onLoadCallback';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(po, s);
+            })();
+</script>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client.js?onload=onLoadCallback';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+</script>
+
+
+

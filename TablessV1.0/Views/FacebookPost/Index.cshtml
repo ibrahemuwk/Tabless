@@ -1,0 +1,219 @@
+﻿<div class="row">
+    <div class="col-sm-12">
+        @using (Ajax.BeginForm("PostUserFeed", "FacebookPost", null,
+
+
+                                                    new AjaxOptions
+                                                    {
+                                                        OnFailure = "handleError(xhr,'Taggable_Friends')",
+                                                        HttpMethod = "Post",
+                                                        UpdateTargetId = "Post_ResponseDiv",
+                                                        LoadingElementId = "divPostingWaitImage",
+                                                        InsertionMode = InsertionMode.Replace
+
+                                                    },
+                                                    new
+                                                    {
+                                                        id = "Status_Post_Form",
+                                                        @class = "form",
+                                                        role = "form"
+                                                    }))
+        {
+            <div id="divPostingWaitImage" class="text-center"></div>
+            <h4>
+                <span class="text-info">Update Your Status</span>
+            </h4>
+            <div class="well">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @* Status Message*@
+                        <textarea name="Message"
+                                  class="form-control"
+                                  rows="3"
+                                  style="max-width:100%;"
+                                  placeholder="What's in your mind?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        @*LINK URL*@
+                        <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-globe" style="top:0px;"></span>
+                            <input type="text" class="form-control" style="position: relative;right: 123px;" name="Link" placeholder="Enter URL Link..." />
+                        </div>
+                    </div>
+                </div>
+                @*Privacy Input - Hidden*@
+                <input name="Privacy" type="hidden" value="EVERYONE" />
+                @*Tagged List of friends - Hidden*@
+                <div id="SelectedFriendListDiv" class="form-inline" style="display:none;">
+                    <span class="text-muted">with&nbsp;</span>
+                    <ul id="SelectedFriendList" class="list-group"></ul>
+
+                </div>
+            </div>
+            <!-- footer row action button:Tag Friends , privacy ,and post-->
+            <div class="form-group input-group">
+                <div class="input-group">
+                    
+                    @*<button type="button" class="btn" onclick="ShowTaggableFriendsDialog();">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <span class="glyphicon glyphicon-user"></span>
+                    </button>*@
+                    <select>
+                        <option value="facebook">Facebook</option>
+                        <option value="plus">Google+</option>
+                        <option value="twitter">Twitter</option>  
+                    </select>
+                    <div class="btn-group">
+                        <button id="dropdownMenuPermission"
+                                class="btn dropdown-toggle"
+                                data-toggle="dropdown"
+                                type="button">
+                            Public
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#"
+                                   data-privacy="EVERYONE">Public</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#"
+                                   data-privacy="ALL_FRIENDS">All Friends</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#"
+                                   data-privacy="FRIENDS_OF_FRIENDS">Friends of Friends</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#"
+                                   data-privacy="SELF">Only Me</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </div>
+            <div id="Post_ResponseDiv" class="form-group text-success">
+
+            </div>
+        }
+
+
+    </div>
+
+</div>
+<!-- Taggable Friends Model Dialog-->
+@*<div class="modal" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dissmiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Who are you with..?</h4>
+            </div>
+            <div class="modal-body">
+                @using (Ajax.BeginForm("FB_TaggableFriends", "Facebook", null,
+
+
+                                        new AjaxOptions
+                                        {
+                                            OnFailure = "handleError(xhr,'Taggable_Friends')",
+                                            HttpMethod = "Get",
+                                            UpdateTargetId = "Taggable_Friends",
+                                            LoadingElementId = "divLoadingTaggableFriends",
+                                            InsertionMode = InsertionMode.Replace
+
+                                        },
+                                        new
+                                        {
+                                            id = "Taggable_Friends_Form",
+
+                                        }))
+                {
+                    <div id="divLoadingTaggableFriends" style="display:none;" class="text-center">
+                        <img src="~/Images/loader.gif" />
+                    </div>
+                }
+                <div id="Taggable_Friends"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                        data-dissmiss="modal" onclick="ApplySelectedFriends();">
+                    Apply
+                </button>
+                <button type="button" class="btn btn-default"
+                        data-dissmiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>*@
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryajax")
+    <script type="text/javascript">
+        function handleError(ajaxContext, UpdateTargetId) {
+            if (ajaxContext != null &&
+                ajaxContext.responseText != null) {
+                $("#" + UpdateTargetId).empty();
+                $("#" + UpdateTargetId).html(ajaxContext.responseText);
+
+            }
+        }
+        //allow dropdown as Selected
+        $(".dropdown-menu li a").click(function () {
+            var selText = $(this).text();
+            $(this).parents('.btn-group').find('.dropdown-toggle').html(selText +
+                '<span class="caret"></span>');
+            if (this.attributes['data-privacy'] != null &&
+                this.attributes['data-privacy'].value != null) {
+                $("input[name='Privacy']").val(this.attributes['data-privacy'].value);
+
+            }
+        });
+        function ShowTaggableFriendsDialog() {
+            $("#Taggable_Friends").empty();
+            $("#Taggable_Friends_Form").submit();
+            $("#myModal").modal("show")
+            return false;
+        }
+        function ApplySelectedFriends() {
+            $("#SelectedFriendList").empty();
+            var selectedCount = 0;
+            $("input[name='Chk_SelectTaggableFriend']:checked").each(function () {
+                selectedCount++;
+                $("#SelectedFriendList").append(
+                    "<li id='" + this.id + "' class='list-group-item'>" +
+                    "<img class='img-thumbnail' src='" +
+                    this.attributes['data-imageurl'].value +
+                    "' />" + this.attributes['data-friendname'].value +
+                    "<button type='button' class='btn btn-sm' " +
+                    "onclick='RemoveSelectedFriend(\"" + this.id + "\");'>" +
+                        "<span class='glyphicon glyphicon-remove'></span></button>" +
+                        "</li>");
+                $("#SelectedFriendListDiv").append(
+                    "<input type='hidden' name='FriendList' value='" +
+                    this.id + "' id='FriendList_" + this.id + "' />");
+            });
+            if (selectedCount > 0) {
+                $("#SelectedFriendListDiv").show();
+            }
+            else {
+                $("#SelectedFriendListDiv").hide();
+            }
+            return true;
+        }
+        function RemoveSelectedFriend(item) {
+            $("#" + item).remove();
+            $("#FriendList_" + item).remove();
+            if ($("#SelectedFriendList > li").length == 0) {
+                $("#SelectedFriendListDiv").hide();
+            }
+
+        }
+
+    </script>
+}

@@ -1,0 +1,10 @@
+﻿@model TablessV1._0.Models.MessageViewModel
+@{
+    ViewBag.Title = Model.Type;
+}
+<h2 class="@(Model.Type == "Error" ? "text-danger" : "text-warning")">"Warning"</h2>
+<dev class="row">
+    <div class="col-xs-12">
+        <h4 class="@(Model.Type == "Error" ? "text-danger" : "text-warning")">@Model.Message</h4>
+    </div>
+</dev>

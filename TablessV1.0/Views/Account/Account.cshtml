@@ -1,0 +1,31 @@
+﻿@model TablessV1._0.Models.RegisterViewModel
+@using (Html.BeginForm("Account", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="jumbotron" style="margin-top: 64px;background-image:url(https://static1.squarespace.com/static/5332d907e4b0de6af957aee4/56895b7d40667a38691c1b10/56895e870e4c11c9349fc449/1451844601144/linkedin-cover-photo-Ryan.png);background-size:cover">
+        <h1>
+           
+
+            <img src="@Url.Action("UserPhotos", "Home" )" style="width:160px;height:160px; background: #FFFFFF;
+    margin: auto;
+    -moz-border-radius: 60px;
+    border-radius: 100px;
+    padding: 6px;
+    box-shadow: 0px 0px 20px #888;" />
+        </h1>
+
+    </div>
+    <fieldset>
+        <legend>Select New Photo</legend>
+        <div class="editor-label">
+        </div>
+        <div class="editor-field" style="display:inline-block">
+            <input class="btn btn-block" style="background-color: #131111;margin-left: 6px;margin-bottom: 12px;" name="Profile" id="profile" type="file" />
+            @Html.ValidationMessageFor(x => x.profile_photo)
+
+           
+                <input class="btn btn-block" style="background-color: #dc5353;" type="submit" value="Create" />
+           
+        </div>
+    </fieldset>
+}

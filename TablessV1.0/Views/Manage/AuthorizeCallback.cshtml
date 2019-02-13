@@ -1,0 +1,149 @@
+﻿@using System.Text.RegularExpressions;
+
+@{ 
+    Layout = "";
+}
+
+@functions{
+
+
+
+    private string ConvertUrlsToLinks(string text)
+    {
+        string regex = @"((www\.|(http|https|ftp|news|file)+\:\/\/)[&#95;.a-z0-9-]+\.[a-z0-9\/&#95;:@=.+?,##%&~-]*[^.|\'|\# |!|\(|?|,| |>|<|;|\)])/i";
+        return text.Replace(regex, "<a href='$1'>$1</a>");
+
+    }
+
+
+
+}
+
+<html>
+<head>
+    
+    
+    @*<style type="text/css">
+        label {
+            display: inline;
+        }
+
+        img {
+            border-radius: 50%;
+            border: 1px solid #808080;
+        }
+
+
+
+        .timeline {
+            overflow-y: scroll;
+            font-weight: bold;
+        }
+
+        .post a {
+            text-decoration: none;
+        }
+    </style>*@
+</head>
+<body>
+    
+
+        @*@using (Html.BeginForm())
+            {
+            <div class="twtpost">
+                <p>Twitter message:<br /><textarea name="txtTwitterMessage" cols="10" placeholder="Type The Post Text"></textarea></p>
+                <button class="btn" name="btnTwit">Tweet</button>
+
+            </div>
+
+
+
+        }*@
+
+        <div class="timeline">
+            
+            @if (ViewBag.Tweets != null)
+            {
+                var tweets = ViewBag.Tweets;
+                foreach (var tweet in tweets)
+                {
+                    <div>
+
+                        <img src="@tweet.User.ProfileImageUrl" alt="img" />
+                        <span class="twtinfo">@(tweet.User.Name + "@" )</span><span>@(tweet.User.ScreenName + " " + tweet.User.Location)</span><br />
+                        <span class="twttime">Created:</span><span> @tweet.CreatedDate</span>
+
+                        <div class="post">
+                            @{
+                                String text = tweet.TextDecoded;
+                                String[] delimiter = { "http" };
+                                string[] words = Regex.Split(text, "http");
+                                <p>@words[0]</p>
+                                for (var i = 1; i < words.Length; i++)
+                                {
+                                    <a href="@("http" + words[i])" target="_blank">@("http" + words[i])</a>
+
+                                }
+                            }
+                        </div>
+                        <div class="action">
+                            <span>@("RetweetCount:" + tweet.RetweetCount)</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://twitter.com/intent/tweet?in_reply_to=@tweet.Id" target="_blank">Reply</a> |
+                            <a href="https://twitter.com/intent/retweet?tweet_id=@tweet.Id" target="_blank">Retweet</a> |
+                            <a href="https://twitter.com/intent/favorite?tweet_id=@tweet.Id" target="_blank">Favorite</a>
+                        </div>
+
+
+
+
+                    </div>
+
+                                    }
+                                }
+
+
+
+        </div>
+        @*<div class="accountHome">
+            <h2>Profile TimeLine</h2>
+            @if (ViewBag.UserTweets != null)
+            {
+                var tweets = ViewBag.UserTweets;
+                foreach (var tweet in tweets)
+                {
+                    <div>
+
+                        <img src="@tweet.User.ProfileImageUrl" alt="img" />
+                        <span class="twtinfo">@(tweet.User.Name + "@" )</span><span>@(tweet.User.ScreenName + " " + tweet.User.Location)</span><br />
+                        <span class="twttime">Created:</span><span> @tweet.CreatedDate</span>
+
+                        <div class="post">
+                            @{
+                                String text = tweet.TextDecoded;
+                                String[] delimiter = { "http" };
+                                string[] words = Regex.Split(text, "http");
+                                <p>@words[0]</p>
+                                for (var i = 1; i < words.Length; i++)
+                                {
+                                    <a href="@("http" + words[i])" target="_blank">@("http" + words[i])</a>
+
+                                }
+                            }
+                        </div>
+                        <div class="action">
+                            <span>@("RetweetCount:" + tweet.RetweetCount)</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="https://twitter.com/intent/tweet?in_reply_to=@tweet.Id" target="_blank">Reply</a> |
+                            <a href="https://twitter.com/intent/retweet?tweet_id=@tweet.Id" target="_blank">Retweet</a> |
+                            <a href="https://twitter.com/intent/favorite?tweet_id=@tweet.Id" target="_blank">Favorite</a>
+                        </div>
+
+
+                    </div>
+
+                                    }
+                                }
+
+        </div>*@
+
+</body>
+</html>

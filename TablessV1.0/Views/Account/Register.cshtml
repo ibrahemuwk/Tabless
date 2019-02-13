@@ -1,0 +1,99 @@
+﻿@model TablessV1._0.Models.RegisterViewModel
+@{
+    ViewBag.Title = "TABLESS";
+}
+<div class="row" style="height:100px"></div>
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="font2">@ViewBag.Title</h1>
+        <h4 class="font text-center">Your gate to easy social networks management</h4>
+    </div>
+    <div class="col-md-6" style="background: rgba(0,0,0,.1);">
+        
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+            @Html.AntiForgeryToken()
+
+            <br />
+            @Html.ValidationSummary();
+            <div class="form-group">
+                @Html.LabelFor(m => m.Fname, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Fname, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Fname, "", new { @class = "text-danger has-error" })
+
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.Lname, new { @class = "col-md-2 control-label" })
+                </div>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Lname, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Lname, "", new { @class = "text-danger has-error" })
+
+
+                    </div>
+                </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger has-error" })
+
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger has-error" })
+
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger has-error" })
+
+
+                </div>
+            </div>
+            @*<div class="form-group">
+                @Html.LabelFor(m => m.profile_photo, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+
+                    <input type="file" name="UserPhoto" id="fileUpload" accept=".png,.jpg,.jpeg,.gif,.tif" />
+
+                </div>
+            </div>*@
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Register" />
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }

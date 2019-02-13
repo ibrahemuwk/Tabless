@@ -1,0 +1,735 @@
+﻿@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using TablessV1._0.Models;
+@using TablessV1._0.Controllers;
+@model TablessV1._0.Models.IndexViewModel
+@{
+    ViewBag.Title = "Manage";
+    var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+    var currentUser = manager.FindById(User.Identity.GetUserId());
+}
+@*<style type="text/css">
+   
+</style>
+<div class="row" style="height:100px"></div>*@
+
+<div class="row">
+    <div class="col-md-4 table-bordered img-rounded" style="background-color:#101010;margin-top:100px;max-width:15%;text-align:center;margin-bottom:50px;max-height:500px">
+        <h5 style="font-weight:bold">Connect/Disconnect</h5>
+        
+        <script>
+
+            var GuserID = "";
+            function ParseJsonData(data) {
+                var itemsArr = data.items;
+                console.log(data.toString());
+                var alldesign = "";
+
+                document.getElementById("design").innerHTML = "";
+                for (var x = 0; x < itemsArr.length; x++) {
+                    var strToPrint = "";
+
+                    var obj = itemsArr[x];
+                    var postKind = obj.kind;
+                    var postData = obj.title;
+                    var postPublishedDate = new Date(obj.published);
+                    var postUpdateDate = new Date(obj.updated);
+                    var postUrl = obj.url;
+                    var verbObj = obj.verb; //share /post
+                    alert(postData);
+                    strToPrint += " postKind : " +
+                        postKind +
+                        " , postData : " +
+                        postData +
+                        "postPublishedDate : " +
+                        postPublishedDate +
+                        " all post Url : " +
+                        postUrl + " verbObj : " + verbObj;
+
+
+
+                    //////////////////////////////////////////////////////
+
+                    var actorObj = obj.actor;
+                    var userName = actorObj.displayName;
+                    var accountUrl = actorObj.url;
+                    var userImageUrl = actorObj.image.url;
+
+                    var accessDesc = obj.access.description;//  access of this post public
+
+                    strToPrint += " , userName : " + userName + " accountUrl : "
+                        + accountUrl + " , userImageUrl : " + userImageUrl;
+
+
+                    alldesign += "<div class=\"post\"style=\"margin:50px;border:1px solid #DDD;pading:7px;\">" +
+                        "<div class=\"userImg\"> img url : <a href=\"" + accountUrl + "\"> <img src = \"" + userImageUrl + "\">" + "</a></div>" +
+                        + "" +
+                        "<div class=\"userName\"> user name : " + userName + "</div>" +
+                        "<div class=\"accessPost\"> acceess : " + accessDesc + "</div>" +
+                        "<div class=\"date\"> published date : " +
+                        postPublishedDate +
+                        "</div>" +
+                        "<div> post data :   " +
+                        postData +
+                        "</div>";
+
+
+
+                    ////////////////////////////////////////////
+                    var objectObj = obj.object;
+
+                    /* if (verbObj == "share") {
+                        //object 
+                        var objectType = objectObj.objectType; //activity
+                        var postUrl = objectObj.url; // https://plus.google.com/+ahmedkhattab01/posts/E3A3uLb4BCd
+                        var postContent = objectObj.contet; //new post test\ufeff
+                        //object actor who post this post
+                        var mainActor = objectObj.actor;
+                        var mainActorUrl = mainActor.url;
+                        var mainActorImgUrl = mainActor.image.url;
+                        var mainActorName = mainActor.displayName;
+            
+                        alldesign += "<br><br> post main content which is shred from  other user : <br><div> main actor name" +
+                            mainActorName +
+                            "</div>/<div> main actor url" +
+                            mainActorUrl +
+                            "</div> <div> <a href=\"" +
+                            mainActorUrl +
+                            "\"> <img src = \"" +
+                            mainActorImgUrl +
+                            "\"></a></div>";
+                        
+            
+                        strToPrint += " , objectType : " +
+                            objectType +
+                            " postUrl : " +
+                            postUrl +
+                            " , postContent : " +
+                            postContent +
+                            " mainActorUrl : " +
+                            mainActorUrl +
+                            " mainActorImgUrl : " +
+                            mainActorImgUrl +
+                            " mainActorName : " +
+                            mainActorName;
+                       
+                    }*/
+
+
+
+                    //attachmnets
+                    var attachmentArr = objectObj.attachments;
+                    if (attachmentArr != undefined) {
+                        var attachmentType = attachmentArr[0].objectType; //"album"
+                        var attachmentContent = attachmentArr[0].displayName; //7/2/17
+                        var allAttachmentUrl = attachmentArr[0].url; //https://plus.google.com/photos/116121647441891070688/albums/6437956443635811729?authkey=CJTfgqDxutjl6QE
+                        strToPrint += " , attachmentType " +
+                            attachmentType +
+                            " , attachmentContent : " +
+                            attachmentContent +
+                            " , all Attachment Url : " +
+                            allAttachmentUrl;
+
+                        alldesign += "<div> attachment type : " + attachmentType + "</div>" +
+                            "" +
+                            " <div> attachment content: " + attachmentContent + "</div>" +
+                            "" +
+                            "<div> attachment url : " +
+                            "   <a href=\"" + allAttachmentUrl + "\"" + "> url attchment</a>" +
+                            "</div>";
+
+                        //thumbnails
+                        var thumbnailsArr = attachmentArr[0].thumbnails;
+                        console.log("\n\n thumbnailsArr object : " + thumbnailsArr + " \n\n");
+                        if (thumbnailsArr != undefined) {
+                            var thumbnailsArrCount = thumbnailsArr.length;
+                            //all images Url
+                            for (var x = 0; x < thumbnailsArrCount; x++) {
+                                var url = thumbnailsArr[x].image.url;
+                                var imageType = thumbnailsArr[x].image.type;
+                                var height = thumbnailsArr[x].image.height;
+                                var width = thumbnailsArr[x].image.width;
+
+                                alldesign += "<br><br> thumbnails: <br>" +
+                                    "<div> url : " +
+                                    "   <img src=\"" + url + "\"> " +
+                                    "</div>" +
+                                    "<div> height : " + height + " , width : " + width +
+                                    "</div>";
+
+
+                                strToPrint += " url " +
+                                    x +
+                                    " : " +
+                                    url +
+                                    " imageType " +
+                                    x +
+                                    " : " +
+                                    imageType +
+                                    " height " +
+                                    x +
+                                    " : " +
+                                    height +
+                                    " width " +
+                                    x +
+                                    " : " +
+                                    width;
+                            }
+                        }
+
+                        else {
+                            var contenAttType = "";
+                            alldesign += "<br><br>";
+                            switch (attachmentType) {
+                                case "photo":
+                                    contenAttType = "photo";
+                                    strToPrint += "\n\n photo \n\n";
+                                    var pimgUrl = attachmentArr[0].fullImage.url; //"album"
+                                    var pimgWidth = attachmentArr[0].fullImage.width;
+                                    var pimgHeight = attachmentArr[0].fullImage.height;
+                                    var content = attachmentArr[0].content; //"album"
+                                    alldesign += "<div> type is photo </div><br>" +
+                                        "image url : " + pimgUrl + "" +
+                                        "<img src=\"" + pimgUrl + "\"/>"
+                                        + "<div> height : " + pimgHeight + " , width : " + pimgWidth + "</div>" +
+                                        "<br>" +
+                                        "<div> content of this image:  " + content + "</div>";
+
+                                    strToPrint += "imgUrl : <img src=\"" + pimgUrl + "\"  content : " + content
+                                        + " , imgWidth : " + pimgWidth + " , imgHeight : " + pimgHeight;;
+                                    strToPrint += "\n\n";
+                                    break;
+                                case "video":
+                                    strToPrint += "\n\n video \n\n";
+                                    contenAttType = "video";
+                                    var vimgUrl = attachmentArr[0].image.url; //"album"
+                                    var vimgWidth = attachmentArr[0].image.width;
+                                    var vimgHeight = attachmentArr[0].image.height;
+                                    var videoHeader = attachmentArr[0].displayName; //"album"
+                                    var contentUnderVideo = attachmentArr[0].content; //"album"
+                                    alldesign += "<div> this type is video </div>" +
+                                        "<div> header of video : " + videoHeader + "</div> " +
+                                        "image url :  " +
+                                        " <img src = \"" + vimgUrl + "\">" +
+                                        "<div> img width : " + vimgWidth + "  , img height : " + vimgHeight + "</div>"
+                                        + "content under video : <div> " + contentUnderVideo + "</div>";
+
+
+                                    strToPrint += "imgUrl :" + vimgUrl + " content : " + contentUnderVideo + " videoHeader " + videoHeader
+                                        + " , imgWidth : " + vimgWidth + " , imgHeight : " + vimgHeight;
+                                    strToPrint += "\n\n";
+
+                                    break;
+                                case "event":
+                                    strToPrint += "\n\n event \n\n";
+                                    contenAttType = "event";
+                                    var eDisplayName = attachmentArr[0].displayName;
+                                    var eUrl = attachmentArr[0].url;
+                                    var eContent = attachmentArr[0].content;
+                                    alldesign += "<div> this type is event </div><div> display name of evet : " + eDisplayName + "</div>"
+                                        + "content of event : <div> " + eContent + "</div> <div> url : <a href=\"" + eUrl + "\">go to event</a></div>";
+
+                                    break;
+                                case "article":
+                                    contenAttType = "article";
+                                    var cimgUrl = attachmentArr[0].image.url;
+                                    var cimgwidth = attachmentArr[0].image.width;
+                                    var cimgheight = attachmentArr[0].image.height;
+                                    alldesign += "<div> this type is article </div>" +
+                                        "<div> image width : " + cimgwidth + " , image height  " + cimgheight + "</div> " +
+                                        "<div> : <img src=\"" + cimgUrl + "\">go to article</a></div>";
+
+                                    break;
+                                case "note":
+                                    var noteDisplayName = attachmentArr[0].displayName;
+                                    alldesign += "<div> this type is note </div>" +
+                                        " display name : " + noteDisplayName;
+                                    var noteImageObj = attachmentArr[0].fullImage;
+                                    if (noteImageObj != undefined) {
+                                        var noteurl = noteImageObj.url;
+                                        var noteimageHeight = noteImageObj.height;
+                                        var noteimageWidth = noteImageObj.width;
+                                        alldesign += "<div> image width : " + noteimageWidth + " image height" +
+                                            noteimageHeight + "</div>" +
+                                            " <div> image: <img src=\"" + noteurl + "\">go to url</a></div>";
+
+
+                                    }
+                                    break;
+
+
+                            }
+
+
+                        }
+                        alldesign += "</div>";
+
+
+                    }
+
+                    /*
+                     var design = "  <div class=\"gcontainer\"> " +
+                         "<div class=\"header\">" +
+                         "<div> <a href=\""+accountUrl +"\">" +
+                         "<img src=\"" +
+                         userImage +
+                         "\">" +
+                         "</a><h2>" +
+                         userName +
+                         "</h2>" +
+                         "<h3>" +
+                         accessDesc +
+                         "</h3>" +
+                         "<a class=\"time\" href=\"#\">" +
+                         publishedDate +
+                         "</a></div></div>" +
+                         "<div class=\"content\">" +
+                         "<p>" +postData+ "<br>" + contentTitle +
+                         "</p>";
+                         
+                     console.log("actor id  " + userID + "     ,");
+                     console.log("displayName : " + userName + "     ,");
+                     console.log("accout url : " + accountUrl + "     ,");
+                     console.log("image url : " + userImage + "\n\n");
+                     //----------------------------------------------------------
+             
+                     //public
+                     
+                     //----------------------------------------------------------
+                     console.log("  object that hold the post data \n");
+                     
+                     console.log("post type  " + postType + "     ,");
+                     console.log("post displayName  " + contentTitle + "     ,");
+                     
+                     
+                     if (attachmentArr[0].image != undefined) {
+                         var imageFromAtt = attachmentArr[0].image;
+                         var imageUrl = imageFromAtt.url
+                         design += "</div><div class=\"image\">"+
+                             "<a href=\"#\">"+
+                             "<img src=\"\">"+
+                         "<img src=\""+imageUrl+"\"></a></div></div>";
+                         console.log(imageUrl  + "  , height : " + imageFromAtt.height + "   , width : " + imageFromAtt.width +
+                             "  ,  type : " + imageFromAtt.type);
+                     }
+                     else {
+                         console.log("array not exist ");
+                     }
+                     if (attachmentArr[0].fullImage != undefined) {
+                         console.log("full image :   " + attachmentArr[0].fullImage.url);
+                     }
+                     document.getElementById("design").innerHTML += design;
+                     console.log("\n\n\n\n");
+                  */
+                    alldesign += "<br> <br>";
+
+                }
+                console.log(strToPrint);
+                document.getElementById("design").innerHTML += alldesign;
+
+
+            }
+            //function (data) {
+            //    var itemsArr = data.items;
+            //    console.log(data.toString());
+            //    for (var x = 0; x < itemsArr.length; x++) {
+            //        var obj = itemsArr[x];
+            //        console.log(obj.url + '\n');
+
+            //        var publishedDate = new Date(obj.published);
+            //        var updateDate = new Date(obj.updated);
+
+            //        console.log("publlished at " + publishedDate + "       ");
+
+            //        console.log(" last updated at " + updateDate + "\n");
+            //        //-----------------------------------------------------------
+            //        console.log(" \n ------------------------------------\n"
+            //            + "user who shred the data info  : \n");
+            //        var actorObj = obj.actor;
+            //        var userID = actorObj.id;
+
+            //        var userName = actorObj.displayName;
+            //        var accountUrl = actorObj.url;
+            //        var userImage = actorObj.image.url;
+
+            //        var accessDesc = obj.access.description;
+
+            //        var objectObj = obj.object;
+            //        var attachmentArr = objectObj.attachments;
+            //        var postType = attachmentArr[0].objectType;
+            //        var contentTitle = attachmentArr[0].displayName;
+            //        var contentUrl = attachmentArr[0].url;
+
+
+
+            //        var design = "  <div class=\"gcontainer\"> " +
+            //            "<div class=\"header\">" +
+            //            "<div> <a href=\"" +
+            //            accountUrl +
+            //            "\">" +
+            //            "<img src=\"" +
+            //            userImage +
+            //            "\">" +
+            //            "</a><h2>" +
+            //            userName +
+            //            "</h2>" +
+            //            "<h3>" +
+            //            accessDesc +
+            //            "</h3>" +
+            //            "<a class=\"time\" href=\"#\">" +
+            //            publishedDate +
+            //            "</a></div></div>" +
+            //            "<div class=\"content\">" +
+            //            "<p>" +
+            //            contentTitle +
+            //            "</p>";
+
+            //        console.log("actor id  " + userID + "     ,");
+            //        console.log("displayName : " + userName + "     ,");
+            //        console.log("accout url : " + accountUrl + "     ,");
+            //        console.log("image url : " + userImage + "\n\n");
+            //        //----------------------------------------------------------
+
+            //        //public
+
+            //        //----------------------------------------------------------
+            //        console.log("  object that hold the post data \n");
+
+            //        console.log("post type  " + postType + "     ,");
+            //        console.log("post displayName  " + contentTitle + "     ,");
+
+
+            //        if (attachmentArr[0].image != undefined) {
+            //            var imageFromAtt = attachmentArr[0].image;
+            //            var imageUrl = imageFromAtt.url
+            //            design += "</div><div class=\"image\">" +
+            //                "<a href=\"#\">" +
+            //                "<img src=\"\">" +
+            //                "<img src=\"" + imageUrl + "\"></a></div></div>";
+            //            console.log(imageUrl + "  , height : " + imageFromAtt.height + "   , width : " + imageFromAtt.width +
+            //                "  ,  type : " + imageFromAtt.type);
+            //        }
+            //        else {
+            //            console.log("array not exist ");
+            //        }
+            //        if (attachmentArr[0].fullImage != undefined) {
+            //            console.log("full image :   " + attachmentArr[0].fullImage.url);
+            //        }
+            //        document.getElementById("design").innerHTML += design;
+            //        console.log("\n\n\n\n");
+
+            //    }
+
+            //    //
+            //    //  $.each( data, function( key, val ) {
+            //    //    items.push( "<li id='" + key + "'>" + val + "</li>" );
+            //    //  });
+            //    //
+            //    //  $( "<ul/>", {
+            //    //    "class": "my-new-list",
+            //    //    html: items.join( "" )
+            //    //  }).appendTo( "body" );
+            //}
+
+           
+
+            function logout() {
+                gapi.auth.signOut();
+                location.reload();
+            }
+
+            function login() {
+                @{ 
+                    int isloged=0;
+                    if (currentUser.GoogleUserId==null)
+                    {
+                        isloged = 0;
+                    }
+                    else
+                    {
+                        isloged = 1;
+                    }
+
+                }
+                if (@isloged==1) {
+
+                }
+                else {
+                    var myParams = {
+                        'clientid': '417470137876-3bss1abem5h0ghr9oois2g691uqto00o.apps.googleusercontent.com',
+                        'cookiepolicy': 'single_host_origin',
+                        'callback': 'loginCallback',
+                        'approvalprompt': 'force',
+                        'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read ' +
+                        'https://www.googleapis.com/auth/plus.me'
+                    };
+
+                    gapi.auth.signIn(myParams);
+                }
+               
+
+            }
+
+            function loginCallback(result) {
+                alert("call back");
+                if (result['status']['signed_in']) {
+                    var request = gapi.client.plus.people.get(
+                        {
+                            'userId': 'me'
+                        });
+                    request.execute(function (resp) {
+                        var email = '';
+                        if (resp['emails']) {
+                            for (i = 0; i < resp['emails'].length; i++) {
+                                if (resp['emails'][i]['type'] == 'account') {
+                                    email = resp['emails'][i]['value'];
+                                }
+                            }
+                        }
+
+                        var str = "Name:" + resp['displayName'] + "<br>";
+                        str += "Image:" + resp['image']['url'] + "<br>";
+                        str += "<img src='" + resp['image']['url'] + "' /><br>";
+                        str += "id: " + resp['id'] + "<br>";
+                        str += "URL:" + resp['url'] + "<br>";
+                        str += "Email:" + email + "<br>";
+
+                        /*db*/
+                        GuserID = resp['id'];
+
+                        @*var url = '@Url.Action("Index", "Dbupdate")?GuserID=' + $(this).data("GuserID");*@
+                        @*var url = '@Url.Action("Index", "Dbupdate")';*@
+                        @*location.href = '@Url.Action("Index", "Dbupdate")' ;*@
+
+                        @*@*window.location.href = '@Url.Action("Index", "Dbupdate")?uname=' + GuserID';*@
+                        //$jQuery.ajax({
+                        //    type: "POST",
+                        //    url: "Index", // the method we are calling
+                        //    contentType: "application/json; charset=utf-8",
+                        //    data: { Uid: GuserID },
+                        //    dataType: "json",
+                        //    success: function (result) {
+                        //        alert('Yay! It worked!');
+
+                        //    },
+                        //    error: function (result) {
+                        //        alert('Oh no :(');
+                        //    }
+                        //});
+                        jQuery.ajax({
+                            type: "POST",
+                            url: "@Url.Action("Index", "Dbupdate")",
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify({ Uid: GuserID }),
+                            success: function (data) {
+                                alert(data);
+                            },
+                            failure: function (errMsg) {
+                                alert(errMsg);
+                            }
+                        });
+                    });
+
+                        alert("saved");
+                    //    document.getElementById("profile").innerHTML = str;
+                         @*jQuery.ajax({
+            type: "POST",
+            url: "@Url.Action("Index")",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ Uid: GuserID }),
+            success: function (data) {
+                alert(data);
+            },
+            failure: function (errMsg) {
+                alert(errMsg);
+            }
+                    });*@
+
+
+                }
+
+            }
+
+            function editDescription(docId, fileName, description) {
+                document.editDescriptionForm.docId = Uid;
+
+
+                document.editDescriptionForm.submit();
+            }
+            function onLoadCallback() {
+                gapi.client.setApiKey('AIzaSyD_oNG0Jw7zI0q8TJNRd0WphZbabUTXOPc');
+                gapi.client.load('plus', 'v1', function () { });
+            }
+
+
+
+        </script>
+        <script type="text/javascript">
+            (function () {
+                var po = document.createElement('script'); po.type = 'text/javascript';
+                po.async = true;
+                po.src = 'https://apis.google.com/js/client.js?onload=onLoadCallback';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(po, s);
+            })();
+        </script>
+        @{ if (currentUser.twitter_connect)
+            {
+
+                <div style="margin-bottom:20px">
+                    <a class="btn btn-social-icon btn-twitter">
+                        <span style="font-size:30px" class="fa fa-twitter"> </span><p>Is Connect</p>
+                    </a>
+                </div>
+
+            }
+            else
+            {
+                <div>
+                    @*<button onclick="login()">google</button>*@
+                    <a  href="@Url.Action("Authorize", "Manage")" class="btn btn-social-icon btn-twitter">
+                        <span style="font-size:30px" class="fa fa-twitter"></span><p>Not Connected</p>
+                    </a>
+                </div>
+            }
+            if (!currentUser.google_connect)
+            {
+                <div style="margin-bottom:20px">
+                    <a onclick="login()"  class="btn btn-social-icon btn-twitter ">
+                        <span style="color:firebrick;font-size:30px" class="fa fa-google-plus"></span><p style="color:firebrick">Not Connect</p>
+                    </a>
+                </div>
+
+            }
+            else
+            {
+                <div style="margin-bottom:20px">
+                    <a  class="btn btn-social-icon btn-twitter">
+                        <span style="color:firebrick;font-size:30px" class="fa fa-google-plus"></span><p style="color:firebrick">Is Connected</p>
+                    </a>
+                </div>
+            }
+            if (!currentUser.facebook_connect)
+            {
+                <div>
+                    <div>
+                        <a href="@Url.Action("ManageLogins", "Manage")" class="btn btn-social-icon btn-twitter">
+                            <span style="color:mediumblue;font-size:30px" class="fa fa-facebook"></span><p style="color:mediumblue">Not Connect</p>
+                        </a>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div>
+                    <a class="btn btn-social-icon btn-twitter">
+                        <span style="color:mediumblue;font-size:30px" class="fa fa-facebook"></span><p style="color:mediumblue">Is Connected</p>
+                    </a>
+                </div>
+            }
+
+        }
+
+
+
+
+
+
+    </div>
+</div>
+
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="">
+    
+
+    
+
+   
+    <div class="col-md-4 table-bordered img-rounded " style="height:50px;margin-left: -14px; background-color:#101010;font-size:15px;margin-bottom:40px">
+
+        @*<dl class="dl-horizontal">
+            <dt>Password:</dt>
+            <dd>*@
+                
+                @if (Model.HasPassword)
+            {
+                    @Html.ActionLink("Change your password", "ChangePassword")
+                    <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+                    <span class="sr-only">Loading4...</span>
+                }
+                else
+                {
+                    @Html.ActionLink("Create", "SetPassword")
+                    <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+                    <span class="sr-only">Loading4...</span>
+                }
+                
+            @*</dd>*@
+
+            @*<dt>External Logins:</dt>
+                <dd>
+                    @Model.Logins.Count [
+                    @Html.ActionLink("Manage", "ManageLogins") ]
+                </dd>*@
+            @*
+                Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+
+                 See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+                    for details on setting up this ASP.NET application to support two-factor authentication using SMS.
+
+                 Uncomment the following block after you have set up two-factor authentication
+            *@
+            @*
+                <dt>Phone Number:</dt>
+                <dd>
+                    @(Model.PhoneNumber ?? "None")
+                    @if (Model.PhoneNumber != null)
+                    {
+                        <br />
+                        <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+                        using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
+                        }
+                    }
+                    else
+                    {
+                        <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+                    }
+                </dd>
+            *@
+            @*<dt>Two-Factor Authentication:</dt>
+            <dd>*@
+                @*<p>
+                        There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+                        for details on setting up this ASP.NET application to support two-factor authentication.
+                    </p>*@
+                @*@if (Model.TwoFactor)
+                    {
+                        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <text>Enabled
+                            <input type="submit" value="Disable" class="btn btn-link" />
+                            </text>
+                        }
+                    }
+                    else
+                    {
+                        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <text>Disabled
+                            <input type="submit" value="Enable" class="btn btn-link" />
+                            </text>
+                        }
+                    }*@
+            @*</dd>*@
+        @*</dl>*@
+        </div>
+    </div>
